@@ -4,8 +4,14 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { loadDevTools } from "jira-dev-tool";
+import { AppProviders } from "./context";
 loadDevTools(() => {
-  ReactDOM.render(<App />, document.getElementById("root"));
+  ReactDOM.render(
+    <AppProviders>
+      <App />
+    </AppProviders>,
+    document.getElementById("root")
+  );
 });
 
 // If you want to start measuring performance in your app, pass a function
