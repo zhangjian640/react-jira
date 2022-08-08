@@ -1,33 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { Typography } from "antd";
 import { SearchPanel } from "./server-panel";
 import { List } from "./list";
-import { cleanObject, useMount, useDebounce } from "../../utils/index";
-import { useHttp } from "../../utils/http";
+import { useDebounce } from "../../utils/index";
+import styled from "@emotion/styled";
+import { useProjects } from "utils/project";
+import { useUsers } from "utils/users";
 
-// import qs from "qs";
-// const baseUrl = process.env.REACT_APP_API_URL;
 export const ProjectListScreen = () => {
-  const client = useHttp();
   const [param, setParam] = useState({
     name: "",
     personId: "",
   });
-  const [list, setList] = useState([]);
-  const [users, setUsers] = useState([]);
   const debounceParam = useDebounce(param, 1000);
-
-  useEffect(() => {
-    client("projects", { data: cleanObject(debounceParam) }).then(setList);
-    // eslint-disable-next-line
-  }, [debounceParam]);
-
-  useMount(() => {
-    client("users").then(setUsers);
-  });
+  const { isLoading, error, data: list } = useProjects(debounceParam);
+  const { data: users } = useUsers();
+  const v: any = undefined;
   return (
-    <div>
-      <SearchPanel param={param} users={users} setParam={setParam} />
-      <List users={users} list={list} />
-    </div>
+    <Container>
+      {v.anme}
+      <h1>项目列表</h1>
+      <SearchPanel param={param} users={users || []} setParam={setParam} />
+      {error ? (
+        <Typography.Text type={"danger"}>{error.message}</Typography.Text>
+      ) : null}
+      <List loading={isLoading} users={users || []} dataSource={list || []} />
+    </Container>
   );
 };
+
+const Container = styled.div`
+  padding: 3.2rem;
+`;

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
 export const isFalsy = (value: unknown) => (value === 0 ? false : !value);
+export const isVoid = (value: unknown) =>
+  value === undefined || value === null || value === "";
 
-export const cleanObject = (object: object) => {
+export const cleanObject = (object: { [key: string]: unknown }) => {
   const result = { ...object };
   Object.keys(object).forEach((key) => {
-    //@ts-ignore
     const value = result[key];
-    if (isFalsy(value)) {
-      //@ts-ignore
+    if (isVoid(value)) {
       delete result[key];
     }
   });
@@ -25,7 +25,7 @@ export const useMount = (callback: () => void) => {
 export const useDebounce = <V>(value: V, delay?: number) => {
   const [debounceValue, setDebouncedValue] = useState(value);
   useEffect(() => {
-    // 每次value、dealy设置一个定时器
+    // 每次value、delay设置一个定时器
     const timeout = setTimeout(() => setDebouncedValue(value), delay);
     // 每次在上一个useEffect处理完后运行
     return () => clearTimeout(timeout);
